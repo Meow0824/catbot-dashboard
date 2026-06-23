@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    var l = window.location;
+    sessionStorage.setItem('redirect', l.pathname.slice('/catbot-dashboard'.length) + l.search + l.hash);
+    l.replace(l.protocol + '//' + l.host + '/catbot-dashboard/');
+  </script>
+</head>
+</html>
