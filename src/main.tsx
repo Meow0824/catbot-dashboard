@@ -14,7 +14,7 @@ import { AuthProvider } from './hooks/useAuth'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename="/catbot-dashboard">
+    <BrowserRouter basename="">
       <AuthProvider>
         <App />
       </AuthProvider>

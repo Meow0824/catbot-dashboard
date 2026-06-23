@@ -21,7 +21,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/callback" element={<CallbackPage />} />
+      <Route path="/catbot-dashboard/callback" element={<CallbackPage />} />
       <Route path="/" element={
         <ProtectedRoute>
           <Layout />
