@@ -2,6 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
+
+// GitHub Pages SPA redirect
+const redirect = sessionStorage.getItem('redirect')
+if (redirect) {
+  sessionStorage.removeItem('redirect')
+  window.history.replaceState(null, '', redirect)
+}
 import App from './App.tsx'
 import { AuthProvider } from './hooks/useAuth'
 
