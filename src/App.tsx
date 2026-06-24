@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import type { ReactNode } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { LoginPage } from './pages/LoginPage'
 import { CallbackPage } from './pages/CallbackPage'
@@ -11,8 +12,9 @@ import { ClassSelectPage } from './pages/ClassSelectPage'
 import { GeneralVotePage } from './pages/GeneralVotePage'
 import { ActivityLogPage } from './pages/ActivityLogPage'
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth()
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return <div style={{ background: '#0b0e14', minHeight: '100vh' }} />
   if (!user) return <Navigate to="/login" replace />
   return <>{children}</>
 }

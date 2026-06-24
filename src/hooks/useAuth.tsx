@@ -10,6 +10,7 @@ interface User {
 interface AuthContextType {
   user: User | null
   token: string | null
+  loading: boolean
   login: (user: User, token: string) => void
   logout: () => void
 }
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const savedUser = localStorage.getItem('catbot_user')
@@ -27,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(JSON.parse(savedUser))
       setToken(savedToken)
     }
+    setLoading(false)
   }, [])
 
   const login = (user: User, token: string) => {
@@ -44,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
