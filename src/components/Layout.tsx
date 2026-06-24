@@ -60,7 +60,7 @@ export function Layout() {
                   <button
                     key={item.path}
                     onClick={() => navigate(item.path)}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium mb-0.5 transition-all"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium mb-0.5 transition-all"
                     style={{
                       background: isActive ? 'rgba(255,181,181,0.1)' : 'transparent',
                       color: isActive ? '#FFB5B5' : '#8b92a8',

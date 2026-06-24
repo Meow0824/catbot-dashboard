@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '../hooks/useAuth'
-import { useEffect, useState } from 'react'
 import { Send, Shield } from 'lucide-react'
 
 export function DashboardPage() {

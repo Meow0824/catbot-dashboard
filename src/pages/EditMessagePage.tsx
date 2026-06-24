@@ -30,7 +30,6 @@ export function EditMessagePage() {
   const handleSelect = (m: SavedMessage) => {
     setSelected(m)
     setContent(m.content || '')
-    setEmbedTitle(m.embed_title || '')
     setMsg('')
   }
 
