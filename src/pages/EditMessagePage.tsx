@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { Edit, Check, Trash2 } from 'lucide-react'
+import { Edit, Check } from 'lucide-react'
 
 interface SavedMessage {
   message_id: string
@@ -17,7 +17,6 @@ export function EditMessagePage() {
   const [messages, setMessages] = useState<SavedMessage[]>([])
   const [selected, setSelected] = useState<SavedMessage | null>(null)
   const [content, setContent] = useState('')
-  const [embedTitle, setEmbedTitle] = useState('')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
 

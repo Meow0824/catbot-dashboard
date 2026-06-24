@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { RefreshCw, Edit } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 
 export function ClassSelectPage() {
   const { token } = useAuth()

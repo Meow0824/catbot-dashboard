@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { Bell, RefreshCw } from 'lucide-react'
 

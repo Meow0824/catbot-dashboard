@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { LayoutDashboard, Send, Shield, RefreshCw } from 'lucide-react'
-
-interface BotStatus {
-  status: string
-}
+import { useEffect, useState } from 'react'
+import { Send, Shield } from 'lucide-react'
 
 export function DashboardPage() {
-  const { token } = useAuth()
   const [botStatus, setBotStatus] = useState<string>('確認中...')
   const apiBase = import.meta.env.VITE_API_BASE
 
