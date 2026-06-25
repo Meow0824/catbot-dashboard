@@ -32,10 +32,22 @@ export function SendMessagePage() {
   const [embed, setEmbed] = useState<EmbedData>({ title: '', description: '', color: '#FFB5B5', imageUrl: '', thumbnailUrl: '' })
   const [linkButtons, setLinkButtons] = useState<LinkButton[]>([])
   const [sending, setSending] = useState(false)
+  const [roles, setRoles] = useState<{id: string, name: string, color: number}[]>([])
+  const [showRoles, setShowRoles] = useState(false)
+  const [roleSearch, setRoleSearch] = useState('')
+  const [cursorPos, setCursorPos] = useState(0)
+  const contentRef = useRef<HTMLTextAreaElement>(null)
   const [sent, setSent] = useState(false)
   const [uploadingImage, setUploadingImage] = useState<'image' | 'thumbnail' | null>(null)
   const imageRef = useRef<HTMLInputElement>(null)
   const thumbRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    fetch(`${apiBase}/api/roles`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.json())
+      .then(data => setRoles(data.roles || []))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     fetch(`${apiBase}/api/channels`, { headers: { Authorization: `Bearer ${token}` } })
@@ -63,6 +75,36 @@ export function SendMessagePage() {
       else setEmbed(prev => ({ ...prev, thumbnailUrl: data.url }))
     }
   }
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value
+    const pos = e.target.selectionStart
+    setContent(val)
+    setCursorPos(pos)
+    const lastAt = val.lastIndexOf('@', pos - 1)
+    if (lastAt !== -1 && lastAt === pos - 1 - (val.slice(lastAt + 1, pos).length)) {
+      const search = val.slice(lastAt + 1, pos)
+      if (!search.includes(' ')) {
+        setRoleSearch(search)
+        setShowRoles(true)
+        return
+      }
+    }
+    setShowRoles(false)
+  }
+
+  const insertRole = (role: {id: string, name: string}) => {
+    const lastAt = content.lastIndexOf('@', cursorPos - 1)
+    if (lastAt === -1) return
+    const before = content.slice(0, lastAt)
+    const after = content.slice(cursorPos)
+    const newContent = before + `<@&${role.id}>` + after
+    setContent(newContent)
+    setShowRoles(false)
+    setTimeout(() => contentRef.current?.focus(), 0)
+  }
+
+  const filteredRoles = roles.filter(r => r.name.toLowerCase().includes(roleSearch.toLowerCase())).slice(0, 8)
 
   const handleSend = async () => {
     if (!content && !embedEnabled) return
@@ -145,10 +187,27 @@ export function SendMessagePage() {
           {/* 純文字 */}
           <div className="rounded-xl p-5" style={{ background: '#151922', border: '0.5px solid rgba(255,255,255,0.06)' }}>
             <label className="text-xs font-medium block mb-1" style={{ color: '#8b92a8' }}>純文字訊息</label>
-            <textarea value={content} onChange={e => setContent(e.target.value)} rows={3}
-              placeholder="輸入訊息內容... 支援 **粗體** *斜體* > 引用"
-              className="w-full rounded-lg px-3 py-2 text-sm text-white outline-none resize-none"
-              style={{ background: '#0b0e14', border: '0.5px solid rgba(255,255,255,0.1)' }} />
+            <div className="relative">
+              <textarea ref={contentRef} value={content} onChange={handleContentChange} rows={3}
+                placeholder="輸入訊息內容... 支援 **粗體** *斜體* > 引用  輸入 @ 可以標記身分組"
+                className="w-full rounded-lg px-3 py-2 text-sm text-white outline-none resize-none"
+                style={{ background: '#0b0e14', border: '0.5px solid rgba(255,255,255,0.1)' }} />
+              {showRoles && filteredRoles.length > 0 && (
+                <div className="absolute left-0 right-0 rounded-lg overflow-hidden z-10" style={{ top: '100%', marginTop: '4px', background: '#1a1f2e', border: '0.5px solid rgba(255,255,255,0.1)' }}>
+                  {filteredRoles.map(role => {
+                    const color = role.color ? '#' + role.color.toString(16).padStart(6, '0') : '#8b92a8'
+                    return (
+                      <button key={role.id} onClick={() => insertRole(role)}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:opacity-80"
+                        style={{ background: 'transparent' }}>
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
+                        <span style={{ color }}>{role.name}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Embed */}
