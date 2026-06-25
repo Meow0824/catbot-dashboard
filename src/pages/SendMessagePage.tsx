@@ -80,19 +80,25 @@ export function SendMessagePage() {
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value
-    const pos = e.target.selectionStart
+    const pos = e.target.selectionStart ?? val.length
     setContent(val)
     setCursorPos(pos)
-    const lastAt = val.lastIndexOf('@', pos - 1)
-    if (lastAt !== -1 && lastAt === pos - 1 - (val.slice(lastAt + 1, pos).length)) {
-      const search = val.slice(lastAt + 1, pos)
-      if (!search.includes(' ')) {
-        setRoleSearch(search)
-        setShowRoles(true)
-        return
-      }
+    const textBeforeCursor = val.slice(0, pos)
+    const atMatch = textBeforeCursor.match(/@([^\s]*)$/)
+    const hashMatch = textBeforeCursor.match(/#([^\s]*)$/)
+    if (atMatch) {
+      setRoleSearch(atMatch[1])
+      setShowRoles(true)
+      setShowChannels(false)
+      setChannelSearch(atMatch[1])
+    } else if (hashMatch) {
+      setChannelSearch(hashMatch[1])
+      setShowChannels(true)
+      setShowRoles(false)
+    } else {
+      setShowRoles(false)
+      setShowChannels(false)
     }
-    setShowRoles(false)
   }
 
   const insertRole = (role: {id: string, name: string}) => {
