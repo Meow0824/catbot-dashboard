@@ -35,6 +35,8 @@ export function SendMessagePage() {
   const [roles, setRoles] = useState<{id: string, name: string, color: number}[]>([])
   const [showRoles, setShowRoles] = useState(false)
   const [roleSearch, setRoleSearch] = useState('')
+  const [showChannels, setShowChannels] = useState(false)
+  const [channelSearch, setChannelSearch] = useState('')
   const [cursorPos, setCursorPos] = useState(0)
   const contentRef = useRef<HTMLTextAreaElement>(null)
   const [sent, setSent] = useState(false)
@@ -105,6 +107,20 @@ export function SendMessagePage() {
   }
 
   const filteredRoles = roles.filter(r => r.name.toLowerCase().includes(roleSearch.toLowerCase())).slice(0, 8)
+
+  const insertChannel = (ch: {id: string, name: string}) => {
+    if (!contentRef.current) return
+    const pos = cursorPos
+    const lastHash = content.lastIndexOf('#', pos - 1)
+    if (lastHash === -1) return
+    const before = content.slice(0, lastHash)
+    const after = content.slice(pos)
+    setContent(before + `<#${ch.id}>` + after)
+    setShowChannels(false)
+    setTimeout(() => contentRef.current?.focus(), 0)
+  }
+
+  const filteredChannels = channels.filter(c => c.name.toLowerCase().includes(channelSearch.toLowerCase())).slice(0, 8)
 
   const handleSend = async () => {
     if (!content && !embedEnabled) return
@@ -205,6 +221,18 @@ export function SendMessagePage() {
                       </button>
                     )
                   })}
+                </div>
+              )}
+              {showChannels && filteredChannels.length > 0 && (
+                <div className="absolute left-0 right-0 rounded-lg overflow-hidden z-10" style={{ top: '100%', marginTop: '4px', background: '#1a1f2e', border: '0.5px solid rgba(255,255,255,0.1)' }}>
+                  {filteredChannels.map(ch => (
+                    <button key={ch.id} onClick={() => insertChannel(ch)}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:opacity-80"
+                      style={{ background: 'transparent', color: '#8b92a8' }}>
+                      <span style={{ color: '#8b92a8' }}>#</span>
+                      <span className="text-white">{ch.name}</span>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
