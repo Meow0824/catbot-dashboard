@@ -49,7 +49,6 @@ export function EditMessagePage() {
 
   const handleSelect = (m: SavedMessage) => {
     setSelected(m)
-    console.log('selected message:', JSON.stringify(m))
     setContent(m.content || '')
     setEmbedTitle(m.embed_title || '')
     setEmbedDesc(m.embed_description || '')
